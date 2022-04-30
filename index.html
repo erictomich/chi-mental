@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Mental - Contador</title>
+    <style>
+        .botao {
+            padding: 15px;
+            margin: 15px;
+            cursor: pointer;
+            width: 200px;
+            height: 100px;
+            font-size: 20px;
+        }
+        .tempo {
+            font-size: 120px;
+        }
+    </style>
+</head>
+<body>
+    <audio src="bell.wav" class="bell"></audio>
+    <audio src="alterna.wav" class="alterna"></audio>
+
+    <div class="tempo">
+        <span id="minutos"></span>:<span id="segundos"></span>
+    </div>
+    
+    <button id="btStart" class="botao">Start</button>
+    <button id="btStop" class="botao">Stop</button>
+    <button id="btPause" class="botao">Pause</button>
+
+    <script>
+        var segundosTotais = 460;
+        var segundosAlerta = 60;
+        var segundosContagem = 0;
+        var contadorLigado = 0;
+
+        var minutos = document.getElementById('minutos');
+        var segundos = document.getElementById('segundos');
+
+        const bell = document.querySelector('.bell');
+        const alterna =  document.querySelector('.alterna');
+
+        minutos.innerHTML = "00";
+        segundos.innerHTML = "00";
+        
+        
+
+        document.getElementById('btStart').onclick = start;
+        document.getElementById('btStop').onclick = stop;
+        document.getElementById('btPause').onclick = pause;
+
+        var contagem;
+
+        function start() {
+            if(contadorLigado == 0) {
+                ligar(1);
+                contagem = setInterval(ligar, 1000);
+            }
+            contadorLigado = 1;
+        }
+
+        function stop() {
+            clearInterval(contagem);
+            minutos.innerHTML = "00";
+            segundos.innerHTML = "00";
+            contadorLigado = 0;
+            segundosContagem = 0;
+        }
+
+        function finaliza() { // sem reiniciar o relógio
+            clearInterval(contagem);
+            contadorLigado = 0;
+        }
+
+        function pause() {
+            clearInterval(contagem);
+            contadorLigado = 0;
+        }
+
+        function ligar(inicio = 0) {
+            var min = minutos.innerHTML;
+            var seg = segundos.innerHTML;
+
+            if (inicio == 0) segundosContagem++;
+
+            
+            if( seg == 59 && min >= 0) {
+                min++;
+                seg = 0;
+            }
+            else if( seg <= 59 && inicio == 0) { 
+                seg++;
+                console.log('segundo')
+            }
+            else if( segundosContagem >= segundosTotais ) {
+                stop();
+            }
+
+            if(seg < 10) {
+                seg = parseInt(seg);
+                seg = "0"+seg.toString();
+            }
+             
+            if(min < 10) {
+                min = parseInt(min);
+                min = "0"+min.toString();
+            }
+
+            
+
+            if(segundosContagem == segundosTotais) {
+                bell.play();
+                finaliza();
+            } else if(segundosContagem % segundosAlerta == 0 && segundosContagem != 0) {
+                alterna.play();
+            }
+           
+                
+            minutos.innerHTML = min;
+            segundos.innerHTML = seg;
+        }
+    </script>
+</body>
+</html>
